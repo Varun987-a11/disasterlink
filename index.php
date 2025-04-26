@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DisasterLink</title>
+
+  <!-- Bootstrap CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+    }
+    .hero {
+      background: url('https://source.unsplash.com/1600x600/?disaster,rescue') no-repeat center center;
+      background-size: cover;
+      color: white;
+      padding: 120px 20px;
+      text-align: center;
+      box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
+    }
+    .feature-icon {
+      font-size: 40px;
+      color: #007bff;
+    }
+    .feature-box {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    footer {
+      background-color: #343a40;
+      color: white;
+      padding: 30px;
+    }
+    footer p {
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">DisasterLink</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link active" href="index.php">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="resources.php">Resources</a></li>
+        <li class="nav-item"><a class="nav-link" href="submit_report.php">Submit Report</a></li>
+        <li class="nav-item"><a class="nav-link" href="view_reports.php">View Reports</a></li>
+        <li class="nav-item"><a class="nav-link" href="dashboard.php">Admin Dashboard</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="container">
+    <h1 class="display-4 fw-bold">Find Help Fast. Stay Safe During Disasters.</h1>
+    <p class="lead">Access shelters, food points, and emergency resources instantly. Stay informed, stay safe.</p>
+    <a href="#features" class="btn btn-primary btn-lg mt-4">Get Started</a>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-5 bg-light">
+  <div class="container text-center">
+    <h2 class="mb-4">What DisasterLink Offers</h2>
+    <div class="row g-4">
+
+      <div class="col-md-4">
+        <div class="feature-box">
+          <div class="feature-icon mb-3">📍</div>
+          <h5>Shelter Locator</h5>
+          <p>Find the nearest relief shelters during floods, storms, or emergencies.</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="feature-box">
+          <div class="feature-icon mb-3">🍱</div>
+          <h5>Food & Water Points</h5>
+          <p>Get access to food and clean water distribution points around you.</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="feature-box">
+          <div class="feature-icon mb-3">📝</div>
+          <h5>Report Issues</h5>
+          <p>Report blocked roads, stranded people, or urgent needs in real-time.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container text-center">
+    <p class="mb-1">© 2025 DisasterLink. All rights reserved.</p>
+    <p class="mb-1">Made by Varun, Varsha, Shlaghana & Sujan</p>
+    <p class="mb-0">A J Institute of Engineering and Technology, Mangalore</p>
+  </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
