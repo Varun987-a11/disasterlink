@@ -80,6 +80,11 @@ DisasterLink aims to strengthen community coordination and accelerate disaster r
 
 ---
 
+## Live Demo
+[Play it here](https://Varun987-a11.github.io/disasterlink/)  
+
+
+
 ## 🤝 Contribution & Credits
 
 This project is developed and maintained by **Varun Kumar S**. Your contributions are welcome under the following guidelines:
