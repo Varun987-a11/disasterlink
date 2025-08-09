@@ -81,7 +81,7 @@ DisasterLink aims to strengthen community coordination and accelerate disaster r
 ---
 
 ## Live Demo
-[Go to Home Page]([index.html](https://Varun987-a11.github.io/disasterlink/index.html
+[Go to Home Page](https://Varun987-a11.github.io/disasterlink/index.html
 )
 
 
