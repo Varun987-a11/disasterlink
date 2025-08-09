@@ -80,6 +80,8 @@ DisasterLink aims to strengthen community coordination and accelerate disaster r
 
 ---
 
+##Live Demo
+[Go to Home Page](index.html)
 
 
 
