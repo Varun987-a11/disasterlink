@@ -1,47 +1,44 @@
-<!--update_status.php-->
+<?php
 session_start();
 
-<?php
-// DB connection
-$servername = "localhost";
-$username = "root";
-$password = "vKs$135#";
-$dbname = "disasterlink_db";
+// Include database configuration
+require_once __DIR__ . '/config.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+// Establish a secure connection
+$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
 // Check DB connection
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    die("Connection failed: " . htmlspecialchars($conn->connect_error));
 }
 
-// Get the report ID and new status from the form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $report_id = $_POST['report_id'];
-    $status = $_POST['status'];
+// Process form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Sanitize and validate input
+    $report_id = isset($_POST['report_id']) ? (int) $_POST['report_id'] : 0;
+    $status = trim($_POST['status'] ?? '');
 
-    // Update the status of the report
-    $sql = "UPDATE reports SET status = ? WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("si", $status, $report_id);
+    if ($report_id > 0 && !empty($status)) {
+        // Use prepared statement
+        $stmt = $conn->prepare("UPDATE reports SET status = ? WHERE id = ?");
+        $stmt->bind_param("si", $status, $report_id);
 
-    if ($stmt->execute()) {
-        $_SESSION['message'] = "Status updated successfully!";
+        if ($stmt->execute()) {
+            $_SESSION['message'] = "Status updated successfully!";
+        } else {
+            $_SESSION['error'] = "Failed to update status. Please try again.";
+        }
+
+        $stmt->close();
     } else {
-        $_SESSION['error'] = "Failed to update status.";
-    }
-    if ($stmt->execute()) {
-        $_SESSION['message'] = "Status updated successfully!";
-    } else {
-        $_SESSION['error'] = "Failed to update status.";
+        $_SESSION['error'] = "Invalid input provided.";
     }
 
-    $stmt->close();
-
-    // Redirect back to the view_reports page after successful update
+    // Redirect back to the view_reports page
     header("Location: view_reports.php");
     exit();
 }
 
 $conn->close();
 ?>
+
