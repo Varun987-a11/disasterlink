@@ -1,39 +1,41 @@
 <?php
-// Database config
-$host = "localhost";
-$user = "root";
-$password = "vKs$135#";
-$dbname = "disasterlink_db";
+// Load environment variables from a separate config file
+// (Never commit .env to GitHub!)
+require_once __DIR__ . '/config.php';
 
 // Create connection
-$conn = new mysqli($host, $user, $password, $dbname);
+$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
 // Check connection
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    die("Connection failed: " . htmlspecialchars($conn->connect_error));
 }
 
 // Get form data if form is submitted
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $name = $_POST['name'];
-    $location = $_POST['location'];
-    $issue_type = $_POST['issue_type'];
-    $description = $_POST['description'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name = trim($_POST['name']);
+    $location = trim($_POST['location']);
+    $issue_type = trim($_POST['issue_type']);
+    $description = trim($_POST['description']);
 
-    // Insert into database
-    $sql = "INSERT INTO reports (name, location, issue_type, description)
-            VALUES ('$name', '$location', '$issue_type', '$description')";
+    // Use prepared statements to prevent SQL injection
+    $stmt = $conn->prepare(
+        "INSERT INTO reports (name, location, issue_type, description)
+         VALUES (?, ?, ?, ?)"
+    );
 
-    if ($conn->query($sql) === TRUE) {
+    $stmt->bind_param("ssss", $name, $location, $issue_type, $description);
+
+    if ($stmt->execute()) {
         $message = "Thank you! Your report has been submitted.";
     } else {
-        $message = "Error: " . $sql . "<br>" . $conn->error;
+        $message = "Error submitting report. Please try again later.";
     }
 
+    $stmt->close();
     $conn->close();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -76,11 +78,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </button>
         <div class="collapse navbar-collapse" id="navMenu">
             <ul class="navbar-nav ms-auto">
-            <li class="nav-item"><a class="nav-link active" href="index.php">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="resources.php">Resources</a></li>
-        <li class="nav-item"><a class="nav-link" href="submit_report.php">Submit Report</a></li>
-        <li class="nav-item"><a class="nav-link" href="view_reports.php">View Reports</a></li>
-        <li class="nav-item"><a class="nav-link" href="dashboard.php">Admin Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link active" href="index.php">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="resources.php">Resources</a></li>
+                <li class="nav-item"><a class="nav-link" href="submit_report.php">Submit Report</a></li>
+                <li class="nav-item"><a class="nav-link" href="view_reports.php">View Reports</a></li>
+                <li class="nav-item"><a class="nav-link" href="dashboard.php">Admin Dashboard</a></li>
             </ul>
         </div>
     </div>
@@ -89,12 +91,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!-- Report Form -->
 <div class="container form-container">
     <h2 class="text-center mb-4">Submit a Disaster Report</h2>
-    <?php
-    if (isset($message)) {
-        echo "<div class='message'><h2>$message</h2></div>";
-    }
-    ?>
-    <form method="POST" action="submit_report.php">
+    <?php if (isset($message)): ?>
+        <div class="alert alert-info text-center"><?= htmlspecialchars($message) ?></div>
+    <?php endif; ?>
+    <form method="POST" action="">
         <div class="mb-3">
             <label for="name" class="form-label">Your Name</label>
             <input type="text" class="form-control" id="name" name="name" required>
@@ -130,9 +130,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 </footer>
 
-<!-- Bootstrap JS and dependencies -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
