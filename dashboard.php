@@ -1,30 +1,35 @@
-<!--dashboaard.php-->
 <?php
-// DB connection
-$servername = "localhost";
-$username = "root";
-$password = "vKs$135#";
-$dbname = "disasterlink_db";
+require_once __DIR__ . '/config.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+// Establish secure database connection
+$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
-// Check DB connection
+// Check connection
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    die("Database connection failed: " . htmlspecialchars($conn->connect_error));
 }
 
 // Initialize counters
 $total = $pending = $in_progress = $resolved = 0;
 
-$sql = "SELECT status, COUNT(*) as count FROM reports GROUP BY status";
+// Use prepared statement for security and reliability
+$sql = "SELECT status, COUNT(*) AS count FROM reports GROUP BY status";
 $result = $conn->query($sql);
 
 if ($result) {
-    while($row = $result->fetch_assoc()) {
-        $status = strtolower($row['status']);
-        if ($status == "pending") $pending = $row['count'];
-        else if ($status == "in progress") $in_progress = $row['count'];
-        else if ($status == "resolved") $resolved = $row['count'];
+    while ($row = $result->fetch_assoc()) {
+        $status = strtolower(trim($row['status']));
+        switch ($status) {
+            case 'pending':
+                $pending = $row['count'];
+                break;
+            case 'in progress':
+                $in_progress = $row['count'];
+                break;
+            case 'resolved':
+                $resolved = $row['count'];
+                break;
+        }
         $total += $row['count'];
     }
 }
@@ -39,10 +44,8 @@ $conn->close();
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>DisasterLink | Dashboard</title>
 
-  <!-- Bootstrap CDN -->
+  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
@@ -66,7 +69,7 @@ $conn->close();
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-      <li class="nav-item"><a class="nav-link active" href="index.php">Home</a></li>
+        <li class="nav-item"><a class="nav-link active" href="index.php">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="resources.php">Resources</a></li>
         <li class="nav-item"><a class="nav-link" href="submit_report.php">Submit Report</a></li>
         <li class="nav-item"><a class="nav-link" href="view_reports.php">View Reports</a></li>
@@ -85,7 +88,7 @@ $conn->close();
       <div class="card text-center shadow-sm">
         <div class="card-body">
           <h5>Total Reports</h5>
-          <p class="fs-4 text-primary"><?= $total ?></p>
+          <p class="fs-4 text-primary"><?= htmlspecialchars($total) ?></p>
         </div>
       </div>
     </div>
@@ -94,7 +97,7 @@ $conn->close();
       <div class="card text-center shadow-sm">
         <div class="card-body">
           <h5>Pending</h5>
-          <p class="fs-4 text-warning"><?= $pending ?></p>
+          <p class="fs-4 text-warning"><?= htmlspecialchars($pending) ?></p>
         </div>
       </div>
     </div>
@@ -103,7 +106,7 @@ $conn->close();
       <div class="card text-center shadow-sm">
         <div class="card-body">
           <h5>In Progress</h5>
-          <p class="fs-4 text-info"><?= $in_progress ?></p>
+          <p class="fs-4 text-info"><?= htmlspecialchars($in_progress) ?></p>
         </div>
       </div>
     </div>
@@ -112,7 +115,7 @@ $conn->close();
       <div class="card text-center shadow-sm">
         <div class="card-body">
           <h5>Resolved</h5>
-          <p class="fs-4 text-success"><?= $resolved ?></p>
+          <p class="fs-4 text-success"><?= htmlspecialchars($resolved) ?></p>
         </div>
       </div>
     </div>
