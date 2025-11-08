@@ -1,34 +1,38 @@
-<!--delete_report.php-->
-session_start();
-
 <?php
-// DB connection
-$servername = "localhost";
-$username = "root";
-$password = "vKs$135#";
-$dbname = "disasterlink_db";
+session_start();
+require_once __DIR__ . '/config.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+// Establish DB connection
+$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
-// Check DB connection
+// Check connection
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    die("Database connection failed: " . htmlspecialchars($conn->connect_error));
 }
 
-// Check if ID is passed
-if (isset($_GET['id'])) {
-    $id = intval($_GET['id']);
-    $sql = "DELETE FROM reports WHERE id = $id";
+// Validate and sanitize ID
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+    $id = (int) $_GET['id'];
 
-    if ($conn->query($sql) === TRUE) {
-        header("Location: view_reports.php"); // redirect back
-        exit();
+    // Prepare statement to avoid SQL injection
+    $stmt = $conn->prepare("DELETE FROM reports WHERE id = ?");
+    $stmt->bind_param("i", $id);
+
+    if ($stmt->execute()) {
+        $_SESSION['message'] = "Report deleted successfully!";
     } else {
-        echo "Error deleting record: " . $conn->error;
+        $_SESSION['error'] = "Failed to delete the report. Please try again.";
     }
-} else {
-    echo "No ID specified for deletion.";
-}
 
-$conn->close();
+    $stmt->close();
+    $conn->close();
+
+    // Redirect back to view_reports page
+    header("Location: view_reports.php");
+    exit();
+} else {
+    $_SESSION['error'] = "Invalid or missing report ID.";
+    header("Location: view_reports.php");
+    exit();
+}
 ?>
