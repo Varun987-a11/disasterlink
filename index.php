@@ -192,11 +192,11 @@
     <div class="row">
       <div class="col-md-6 text-center text-md-start">
         <h4 class="fw-bold text-info">DisasterLink</h4>
-        <p class="text-white-50">Providing a vital digital link during Mangalore's critical moments.</p>
+        <!-- <p class="text-white-50">Providing a vital digital link during Mangalore's critical moments.</p> -->
       </div>
       <div class="col-md-6 text-center text-md-end mt-4 mt-md-0">
-        <p class="mb-0 small text-white-50">A Project by</p>
-        <p class="fw-bold">Varun, Varsha, Shlaghana & Sujan</p>
+        <p class="mb-0 small text-white-50">Built by</p>
+        <p class="fw-bold">Varunn</p>
         <p class="small text-white-50">AJIET, Mangalore</p>
       </div>
     </div>
