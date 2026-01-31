@@ -294,7 +294,7 @@ $result = $stmt->get_result();
         <footer>
             <div class="d-flex justify-content-between">
                 <p>&copy; 2025 <strong>DisasterLink</strong>. All rights reserved.</p>
-                <p>Developed by <strong>Varun</strong>, AJIET Mangalore.</p>
+                <p>Developed  by <strong>Varun</strong>, AJIET Mangalore.</p>
             </div>
         </footer>
     </div>
