@@ -1,21 +1,10 @@
 <?php
-// Database config - EXACTLY as provided
-$host = "localhost";
-$user = "root";
-$password = "vKs$135#";
-$dbname = "disasterlink_db";
-
-// Create connection
-$conn = new mysqli($host, $user, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// 1. Centralized Connection (Securely pulls from db_credentials.php)
+require_once '../includes/config.php'; 
 
 $message = null;
 
-// Handle form submission - EXACTLY as provided
+// 2. Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = trim($_POST['name']);
     $location = trim($_POST['location']);
@@ -26,7 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $sql = "INSERT INTO reports (name, location, issue_type, description, latitude, longitude)
             VALUES (?, ?, ?, ?, ?, ?)";
+    
     $stmt = $conn->prepare($sql);
+    // Note: Use "ssssdd" for 4 strings and 2 doubles (floats)
     $stmt->bind_param("ssssdd", $name, $location, $issue_type, $description, $latitude, $longitude);
 
     if ($stmt->execute()) {
@@ -36,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     $stmt->close();
-    $conn->close();
+    // We close the connection at the bottom of the file after the HTML renders
 }
 ?>
 
@@ -64,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             font-family: 'Inter', sans-serif;
             background-color: var(--dl-bg);
             color: var(--dl-text-dark);
-            padding-top: 100px; /* Space for fixed navbar */
+            padding-top: 100px; 
         }
 
         h2, h5, .navbar-brand {
@@ -72,7 +63,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             font-weight: 700;
         }
 
-        /* Navbar Style from Index */
         .navbar {
             background-color: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(12px);
@@ -84,7 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             color: var(--dl-text-dark) !important;
         }
 
-        /* Refined Form Container */
         .form-container {
             background-color: #fff;
             padding: 40px;
@@ -113,7 +102,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             border-color: var(--dl-primary);
         }
 
-        /* Success Message Styling */
         .message {
             text-align: center;
             padding: 15px;
@@ -124,14 +112,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             border: 1px solid #10b981;
         }
 
-        /* Map Styling */
         #map {
             height: 350px;
             margin: 15px 0 25px;
             border: none;
             border-radius: 16px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            z-index: 1; /* Ensure dropdowns don't hide under map */
+            z-index: 1;
         }
 
         .btn-primary {
@@ -165,13 +152,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <a class="navbar-brand" href="../index.php">
             <i class="bi bi-broadcast text-info me-2"></i>DisasterLink
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
         <div class="collapse navbar-collapse" id="navMenu">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="../index.php">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="resources.php">Resources</a></li>
             </ul>
         </div>
     </div>
@@ -223,7 +206,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <div class="mb-2">
                 <h5 class="mb-1">Select Location on Map</h5>
-                <p class="small text-muted mb-3">Click on the map to pin the exact emergency location.</p>
                 <div id="map"></div>
             </div>
 
@@ -238,40 +220,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="container text-center">
         <p class="mb-1">© 2025 **DisasterLink**. All rights reserved.</p>
         <p class="mb-1">Made by **Varun, Varsha, Shlaghana & Sujan**</p>
-        <p class="small text-white-50">A J Institute of Engineering and Technology, Mangalore</p>
     </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
 
 <script>
-// Initialize Leaflet Map - PRESERVED LOGIC
 var map = L.map('map').setView([12.87, 74.88], 10);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-}).addTo(map);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
 
 var marker;
-
 map.on('click', function (e) {
     var lat = e.latlng.lat.toFixed(6);
     var lng = e.latlng.lng.toFixed(6);
-
     document.getElementById('latitude').value = lat;
     document.getElementById('longitude').value = lng;
-
-    if (marker) {
-        marker.setLatLng(e.latlng);
-    } else {
-        marker = L.marker(e.latlng).addTo(map);
-    }
-
+    if (marker) { marker.setLatLng(e.latlng); } 
+    else { marker = L.marker(e.latlng).addTo(map); }
     marker.bindPopup("Pinned Location:<br>" + lat + ", " + lng).openPopup();
 });
 </script>
 
 </body>
 </html>
+<?php $conn->close(); ?>

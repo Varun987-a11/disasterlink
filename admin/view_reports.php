@@ -5,16 +5,8 @@ if (!isset($_SESSION['admin_logged_in'])) {
     exit();
 }
 
-// DB connection - PRESERVED EXACTLY
-$servername = "localhost";
-$username = "root";
-$password = "vKs$135#";
-$dbname = "disasterlink_db";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// 1. Centralized Connection (Hides credentials from Git)
+require_once '../includes/config.php'; 
 
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $status_filter = isset($_GET['status_filter']) ? $_GET['status_filter'] : '';
@@ -284,7 +276,6 @@ $result = $stmt->get_result();
                     } else {
                         echo "<tr><td colspan='7' class='text-center py-5 text-muted'>No reports found.</td></tr>";
                     }
-                    $conn->close();
                     ?>
                     </tbody>
                 </table>
@@ -294,7 +285,7 @@ $result = $stmt->get_result();
         <footer>
             <div class="d-flex justify-content-between">
                 <p>&copy; 2025 <strong>DisasterLink</strong>. All rights reserved.</p>
-                <p>Developed  by <strong>Varun</strong>, AJIET Mangalore.</p>
+                <p>Developed by <strong>Varun</strong>, AJIET Mangalore.</p>
             </div>
         </footer>
     </div>
@@ -302,3 +293,4 @@ $result = $stmt->get_result();
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+<?php $conn->close(); ?>

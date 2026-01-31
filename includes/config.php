@@ -1,10 +1,8 @@
 <?php
-$host = 'localhost';
-$db = 'disasterlink_db';
-$user = 'root';
-$pass = 'vKs$135#'; // use your password if set
+// Load the secret credentials
+require_once 'db_credentials.php';
 
-$conn = new mysqli($host, $user, $pass, $db);
+$conn = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);

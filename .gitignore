@@ -1,0 +1,6 @@
+# Ignore the actual credentials file
+includes/db_credentials.php
+
+# Ignore XAMPP/OS specific files
+.DS_Store
+thumbs.db

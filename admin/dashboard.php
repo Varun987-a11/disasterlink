@@ -5,17 +5,8 @@ if (!isset($_SESSION['admin_logged_in'])) {
     exit();
 }
 
-// DB connection - PRESERVED EXACTLY
-$servername = "localhost";
-$username = "root";
-$password = "vKs$135#";
-$dbname = "disasterlink_db";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// 1. Centralized Connection (Now hides your password from Git)
+require_once '../includes/config.php'; 
 
 // Initialize counters - PRESERVED LOGIC
 $total = $pending = $in_progress = $resolved = 0;
@@ -49,7 +40,8 @@ if ($result) {
         ];
     }
 }
-$conn->close();
+// Note: $conn->close() removed from top to ensure stability, 
+// usually closed at the very bottom or left to PHP's garbage collection.
 ?>
 
 <!DOCTYPE html>
@@ -78,7 +70,6 @@ $conn->close();
             margin: 0;
         }
 
-        /* Sidebar Styles */
         .sidebar {
             width: var(--dl-sidebar-width);
             background-color: var(--dl-admin-dark);
@@ -118,7 +109,6 @@ $conn->close();
 
         .nav-link-custom i { margin-right: 12px; font-size: 1.2rem; }
 
-        /* Dashboard Cards */
         .stat-card {
             background: white;
             border-radius: 20px;
@@ -240,7 +230,6 @@ $conn->close();
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
     <script>
-        // Initialize Map - PRESERVED LOGIC
         var map = L.map('map').setView([12.87, 74.88], 11);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -259,3 +248,4 @@ $conn->close();
     </script>
 </body>
 </html>
+<?php $conn->close(); ?>
